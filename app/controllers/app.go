@@ -1,14 +1,44 @@
 package controllers
 
-import "github.com/revel/revel"
+import (
+	"fmt"
+	"github.com/marpaia/chef-golang"
+	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
+	"os"
+	"time"
+)
 
 type App struct {
 	*revel.Controller
 }
 
+var ChefConnection *chef.Chef
+
 func (c App) Index() revel.Result {
-	greeting := "Aloha World"
-	return c.Render(greeting)
+	ConnectChef()
+	databags, err := ChefConnection.GetData()
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
+	return c.Render(databags)
+}
+
+func ConnectChef() {
+	var err error
+	if err = cache.Get("ChefConnection", &ChefConnection); err != nil {
+		ChefConnection, err = chef.Connect()
+		ChefConnection.SSLNoVerify = true
+		// ChefConnection, err = chef.ConnectBuilder("http://chef-server.libeo.com", "4000",
+		// 	"", "mpelletier2", "/home/max/.chef/mpelletier2.pem", "")
+		if err != nil {
+			fmt.Println("Error:", err)
+			os.Exit(1)
+		}
+		cache.Set("ChefConnection", ChefConnection, 30*time.Minute)
+	}
 }
 
 func (c App) Hello(myName string) revel.Result {

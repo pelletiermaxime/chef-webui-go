@@ -1,7 +1,7 @@
 {{set . "title" "Home"}}
 {{template "header.html" .}}
 
-<header class="hero-unit" style="background-color:#A9F16C">
+<header class="jumbotron" style="background-color:#A9F16C">
   <div class="container">
     <div class="row">
       <div class="hero-text">
@@ -22,6 +22,9 @@
         {{end}}
         <input type="submit" value="Say hello!" />
       </form>
+      {{range $index, $element := .databags}}
+        <a href="/databags/{{ $index }}">{{ $index}}</a><br />
+      {{end}}
     </div>
   </div>
 </div>
