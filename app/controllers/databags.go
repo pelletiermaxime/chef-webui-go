@@ -13,27 +13,18 @@ type Databags struct {
 }
 
 func (c Databags) Show(id string) revel.Result {
-	var databags map[string]string
-	if err := cache.Get("databag_"+id, &databags); err != nil {
-		ConnectChef()
-		databag, ok, errgetdatabag := ChefConnection.GetDataByName(id)
-		databags = databag
-		if errgetdatabag != nil {
-			fmt.Println("Error:", errgetdatabag)
-			os.Exit(1)
-		}
-		if !ok {
-			fmt.Println("Couldn't find that databag!")
-		}
-		cache.Set("databag_"+id, databags, 30*time.Minute)
-	}
+	databags := getDatabagCached(id)
 	// fmt.Println(databags)
 	return c.Render(databags, id)
 }
 
 func (c Databags) ShowSub(id string, sub string) revel.Result {
-	var databags map[string]string
 	databagName := id + "/" + sub
+	databags := getDatabagCached(databagName)
+	return c.Render(databags, id)
+}
+
+func getDatabagCached(databagName string) (databags map[string]string) {
 	if err := cache.Get("databag_"+databagName, &databags); err != nil {
 		ConnectChef()
 		databag, ok, err := ChefConnection.GetDataByName(databagName)
@@ -47,5 +38,5 @@ func (c Databags) ShowSub(id string, sub string) revel.Result {
 		}
 		cache.Set("databag_"+databagName, databags, 30*time.Minute)
 	}
-	return c.Render(databags, id)
+	return databags
 }
