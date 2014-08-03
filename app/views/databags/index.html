@@ -1,13 +1,27 @@
 {{set . "title" "Home"}}
 {{template "header.html" .}}
-<div class="container">
-  <div class="row">
-    <div class="span6">
-      {{template "flash.html" .}}
-      {{range $index, $element := .databags}}
-        <a href="/databags/{{ $index }}">{{ $index}}</a><br />
-      {{end}}
-    </div>
-  </div>
-</div>
+
+{{template "flash.html" .}}
+<a href="/databags/create">
+	<button type="submit" class="btn btn-primary btn-lg">Créer</button>
+</a>
+<table class="table">
+<thead>
+<tr>
+	<th>Databag name</th>
+	<th>&nbsp;</th>
+	<th>&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+{{range $index, $element := .databags}}
+<tr>
+	<td><a href="/databags/{{ $index }}">{{ $index}}</a></td>
+	<td><a href="/databags/{{ $index }}">Edit</a></td>
+	<td>Delete</td>
+</tr>
+{{end}}
+</tbody>
+</table>
+
 {{template "footer.html" .}}
