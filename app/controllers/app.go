@@ -16,23 +16,16 @@ type App struct {
 var ChefConnection *chef.Chef
 
 func (c App) Index() revel.Result {
-	ConnectChef()
-	databags, err := ChefConnection.GetData()
-	if err != nil {
-		fmt.Println("Error:", err)
-		os.Exit(1)
-	}
-
-	return c.Render(databags)
+	return c.Render()
 }
 
 func ConnectChef() {
 	var err error
 	if err = cache.Get("ChefConnection", &ChefConnection); err != nil {
 		ChefConnection, err = chef.Connect()
-		ChefConnection.SSLNoVerify = true
+		// ChefConnection.SSLNoVerify = true
 		// ChefConnection, err = chef.ConnectBuilder("http://chef-server.libeo.com", "4000",
-		// 	"", "mpelletier2", "/home/max/.chef/mpelletier2.pem", "")
+		// "", "mpelletier2", "/root/.chef/mpelletier2.pem", "")
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)

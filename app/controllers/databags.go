@@ -12,6 +12,17 @@ type Databags struct {
 	*revel.Controller
 }
 
+func (c Databags) Index() revel.Result {
+	ConnectChef()
+	databags, err := ChefConnection.GetData()
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
+	return c.Render(databags)
+}
+
 func (c Databags) Show(id string) revel.Result {
 	databags := getDatabagCached(id)
 	// fmt.Println(databags)

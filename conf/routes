@@ -15,5 +15,6 @@ GET     /public/*filepath                       Static.Serve("public")
 # Catch all
 #*       /:controller/:action                    :controller.:action
 
+GET     /databags                               Databags.Index
 GET     /databags/:id                           Databags.Show
 GET     /databags/:id/:sub                      Databags.ShowSub
